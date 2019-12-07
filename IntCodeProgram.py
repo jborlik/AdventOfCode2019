@@ -13,11 +13,16 @@ class OpCode:
 
 class IntCodeProgram:
     def __init__(self, programline):
-        self.memory = [int(x) for x in programline.split(sep=',')]
-        self.instruction_pointer = 0
+        self.initial_prog = programline
         self.input = []
+        self.reset()
+
+    def reset(self):
+        self.memory = [int(x) for x in self.initial_prog.split(sep=',')]
+        self.instruction_pointer = 0
         self.input_pointer = 0
         self.output = []
+        # leaving self.input alone
 
     def setInput(self, theinput):
         self.input = theinput
@@ -111,4 +116,21 @@ class IntCodeProgram:
 
         return willcontinue
 
+
+if __name__ == "__main__":
+    # Some tests here
+
+    # I/O:  get input, write output, terminate
+    test1 = IntCodeProgram('3,0,4,0,99')
+    test1.setInput([10])
+    test1.process()
+    print(f"Test1 input={test1.input} output={test1.output}")
+    if (test1.input[0] != test1.output[0]):
+        print("Test 1: FAIL")
+    
+    # consider whether the input is equal to 8; output 1 (if it is) or 0 (if it is not)
+    test3 = IntCodeProgram('3,9,8,9,10,9,4,9,99,-1,8')   
+    test3.setInput([8])
+    test3.process()
+    print(f'Test3 output={test3.output}')  # if input=8, then 1
 
