@@ -22,6 +22,7 @@ class IntCodeProgram:
         self.instruction_pointer = 0
         self.input_pointer = 0
         self.output = []
+        self.status = 'Initialized'
         # leaving self.input alone
 
     def setInput(self, theinput):
@@ -29,6 +30,7 @@ class IntCodeProgram:
 
     def process(self):
         iscontinuing = True
+        self.status = 'Running'
         while iscontinuing:
             iscontinuing = self.processNextInstructionAndContinue()
 
@@ -62,11 +64,17 @@ class IntCodeProgram:
             pointer_increment = 4
         elif thisOp.code == 3:
             #  Read input:  3,loc
-            theinputvalue = self.input[self.input_pointer]
-            self.input_pointer += 1
-            ilocput = self.memory[self.instruction_pointer + 1]
-            self.memory[ilocput] = theinputvalue
-            pointer_increment = 2
+            if self.input_pointer >= len(self.input):
+                # Wait for more input!
+                self.status = 'Waiting for input'
+                pointer_increment = 0
+                willcontinue = False
+            else:
+                theinputvalue = self.input[self.input_pointer]
+                self.input_pointer += 1
+                ilocput = self.memory[self.instruction_pointer + 1]
+                self.memory[ilocput] = theinputvalue
+                pointer_increment = 2
         elif thisOp.code == 4:
             # Write output: 4,a
             val0 = self.resolveValue(self.memory[self.instruction_pointer+1], thisOp.modes[0])
@@ -110,6 +118,7 @@ class IntCodeProgram:
 
         else:
             #print("Halting with instruction ", iop)
+            self.status = 'Halted'
             willcontinue = False
 
         self.instruction_pointer += pointer_increment          
