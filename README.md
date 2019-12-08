@@ -11,6 +11,7 @@ Code is tested with Python 3.6.6 (Anaconda distribution) on Win10. Developed wit
 * Day 3:  Instructions to walk on a grid.  Didn't complete part 2 yet.
 * Day 4:  Count numbers that meet criteria (the trickiest of which was digit-matching, requiring string conversion).  Times:  00:19:04 / 00:49:05.  Ranks:  2560 / 2905.  In my defense, my Win10 laptop crashed and needed a reboot!
 * Day 5:  Expand the Intcode program, with jumps, I/O, and comparison.  I built it up with a class, perhaps reusable for future days.  Times:  00:59:28 / 01:14:26.  Ranks:  1771 / 1460.
+* Day 6:  Part 1 was easy, but I stumbled (two days later due to time restrictions) on Part 2.  It doesn't look pretty, when all I really needed was a breadth-first search.
 
 
 ## See previous work at:
