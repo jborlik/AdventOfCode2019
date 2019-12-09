@@ -15,41 +15,59 @@ testpath2 = [x.split(',') for x in teststr_2.splitlines()]
 
 MAXSIZE = 50000
 ORIGIN = int(MAXSIZE/2)
-workingarr = np.zeros((MAXSIZE,MAXSIZE),dtype=int)
+world1 = np.zeros((MAXSIZE,MAXSIZE),dtype=int)
+world2 = np.zeros((MAXSIZE,MAXSIZE),dtype=int)
 
 thepath = path
 
-def processInstructions(world, instructions, wireid):
+def processInstructions(world, instructions, wireid, otherworld, potentialmatches):
     locx = 0
     locy = 0
+    step = 0
     for aIns in instructions:
-        (locx,locy) = processInstruction(world, aIns, locx, locy, wireid)
+        (locx,locy, step) = processInstruction(world, aIns, locx, locy, wireid, step, otherworld, potentialmatches)
 
-def processInstruction(world, theInstruction, locx, locy, wireid):
+def processInstruction(world, theInstruction, locx, locy, wireid, step, otherworld, potentialmatches):
     dirr  = theInstruction[0]
     dist = int(theInstruction[1:])
     walkarr = {"U": (0,-1), "D": (0,1), "R": (1,0), "L": (-1,0) }
     for i in range(0,dist):
         locx += walkarr[dirr][0]
         locy += walkarr[dirr][1]
+        step += 1
         #print('walking {}{}:  step {}, at x={} y={} currval={}'.format(dirr,dist,i,locx,locy, world[locx+ORIGIN,locy+ORIGIN]))
-        world[locx+ORIGIN,locy+ORIGIN] = world[locx+ORIGIN,locy+ORIGIN] | wireid
-    return (locx,locy)
+        if (world[locx+ORIGIN,locy+ORIGIN] == 0):
+            world[locx+ORIGIN,locy+ORIGIN] = step
+        if (otherworld[locx+ORIGIN,locy+ORIGIN] != 0):
+            potentialmatches.append( (locx+ORIGIN,locy+ORIGIN, 
+                                    otherworld[locx+ORIGIN,locy+ORIGIN], step) )
+    return (locx,locy,step)
 
-processInstructions(workingarr, thepath[0], 1)
-print(workingarr)
-processInstructions(workingarr, thepath[1], 2)
-print(workingarr)
+matches = []
+processInstructions(world1, thepath[0], 1, world2, matches)
+print(world1)
+processInstructions(world2, thepath[1], 2, world1, matches)
+print(world2)
 
-crosses = np.where(workingarr == 3)
 mindist = 100000
 mincross = ()
-for across in zip(crosses[0],crosses[1]):
+for across in matches:
     thedist = abs(across[0]-ORIGIN) + abs(across[1]-ORIGIN)
     if thedist < mindist:
         mindist = thedist
         mincross = across
-print("Min distance crossing at {} with distance={}".format(mincross, mindist))
+print("Part1:  Min distance crossing at {} with distance={}".format(mincross, mindist))
+
+minsteps = 100000
+mincross = ()
+for across in matches:
+    thedist = across[2] + across[3]
+    if thedist < minsteps:
+        minsteps = thedist
+        mincross = across
+
+print("Part2:  Min steps crossing at {} with distance={}".format(mincross, minsteps))
+
 
 
 
