@@ -23,6 +23,7 @@ class IntCodeProgram:
         self.input_pointer = 0
         self.output = []
         self.status = 'Initialized'
+        self.relative_base = 0
         # leaving self.input alone
 
     def setInput(self, theinput):
@@ -34,12 +35,38 @@ class IntCodeProgram:
         while iscontinuing:
             iscontinuing = self.processNextInstructionAndContinue()
 
+    def expandMemoryIfNeeded(self,parameterNeeded):
+        if parameterNeeded >= len(self.memory):
+            self.memory.extend([0 for x in range(parameterNeeded-len(self.memory)+1)])
+
     def resolveValue(self, parameter, mode):
         if mode == '0':
+            # position mode
+            self.expandMemoryIfNeeded(parameter)
             return self.memory[parameter]
         if mode == '1':
+            # immediate mode
             return parameter
+        if mode == '2':
+            # relative mode
+            self.expandMemoryIfNeeded(parameter + self.relative_base)
+            return self.memory[parameter + self.relative_base]
         return 0
+
+    def storeValue(self, parameter, mode, value):
+        if mode == '0':
+            # position mode
+            locput = self.memory[parameter]
+            self.expandMemoryIfNeeded(locput)
+            self.memory[locput] = value
+        if mode == '1':
+            # immediate mode
+            print('huh?  immediate mode not value for storing')
+        if mode == '2':
+            # relative mode
+            locput = self.memory[parameter] + self.relative_base
+            self.expandMemoryIfNeeded(locput)
+            self.memory[locput] = value
 
     def processNextInstructionAndContinue(self):
         thisOp = OpCode(self.memory[self.instruction_pointer])
@@ -50,17 +77,15 @@ class IntCodeProgram:
             #  Addition:  1,a,b,loc
             val0 = self.resolveValue(self.memory[self.instruction_pointer+1], thisOp.modes[0])
             val1 = self.resolveValue(self.memory[self.instruction_pointer+2], thisOp.modes[1])
-            ilocput = self.memory[self.instruction_pointer + 3]
             retval = val0 + val1
-            self.memory[ilocput] = retval
+            self.storeValue(self.instruction_pointer + 3,thisOp.modes[2], retval)
             pointer_increment = 4
         elif thisOp.code == 2:
             #  Multiplication:  2,a,b,loc
             val0 = self.resolveValue(self.memory[self.instruction_pointer+1], thisOp.modes[0])
             val1 = self.resolveValue(self.memory[self.instruction_pointer+2], thisOp.modes[1])
-            ilocput = self.memory[self.instruction_pointer + 3]
             retval = val0 * val1
-            self.memory[ilocput] = retval
+            self.storeValue(self.instruction_pointer + 3,thisOp.modes[2], retval)
             pointer_increment = 4
         elif thisOp.code == 3:
             #  Read input:  3,loc
@@ -72,8 +97,7 @@ class IntCodeProgram:
             else:
                 theinputvalue = self.input[self.input_pointer]
                 self.input_pointer += 1
-                ilocput = self.memory[self.instruction_pointer + 1]
-                self.memory[ilocput] = theinputvalue
+                self.storeValue(self.instruction_pointer + 1,thisOp.modes[0], theinputvalue)
                 pointer_increment = 2
         elif thisOp.code == 4:
             # Write output: 4,a
@@ -100,20 +124,26 @@ class IntCodeProgram:
             # less than:  7,a,b,loc   if a<b *loc=1 else *loc=0
             val0 = self.resolveValue(self.memory[self.instruction_pointer+1], thisOp.modes[0])
             val1 = self.resolveValue(self.memory[self.instruction_pointer+2], thisOp.modes[1])
-            ilocput = self.memory[self.instruction_pointer + 3]
-            self.memory[ilocput] = 0
+            retval = 0
             if val0 < val1:
-                self.memory[ilocput] = 1
+                retval = 1
+            self.storeValue(self.instruction_pointer + 3,thisOp.modes[2], retval)
             pointer_increment = 4
         elif thisOp.code == 8:
             # less than:  7,a,b,loc   if a=b *loc=1 else *loc=0
             val0 = self.resolveValue(self.memory[self.instruction_pointer+1], thisOp.modes[0])
             val1 = self.resolveValue(self.memory[self.instruction_pointer+2], thisOp.modes[1])
-            ilocput = self.memory[self.instruction_pointer + 3]
-            self.memory[ilocput] = 0
+            retval = 0
             if val0 == val1:
-                self.memory[ilocput] = 1
+                retval = 1
+            self.storeValue(self.instruction_pointer + 3,thisOp.modes[2], retval)
             pointer_increment = 4
+        elif thisOp.code == 9:
+            # adjust relative base
+            val0 = self.resolveValue(self.memory[self.instruction_pointer+1], thisOp.modes[0])
+            self.relative_base += val0
+            pointer_increment = 2
+
                                 
 
         else:
@@ -143,3 +173,17 @@ if __name__ == "__main__":
     test3.process()
     print(f'Test3 output={test3.output}')  # if input=8, then 1
 
+    #109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99 takes no input and produces a copy of itself as output
+    test4 = IntCodeProgram('109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99')
+    test4.process()
+    print(f'Test4 output={test4.output}')
+
+    #test 5  should produce a large number
+    test5 = IntCodeProgram('1102,34915192,34915192,7,4,7,99,0')
+    test5.process()
+    print(f'Test5 output={test5.output}')
+   
+    #test 6 should produce the number in the middle
+    test6 = IntCodeProgram('104,1125899906842624,99')
+    test6.process()
+    print(f'Test6 output={test6.output}')

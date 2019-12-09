@@ -14,6 +14,7 @@ Code is tested with Python 3.6.6 (Anaconda distribution) on Win10. Developed wit
 * Day 6:  Part 1 was easy, but I stumbled (two days later due to time restrictions) on Part 2.  It doesn't look pretty, when all I really needed was a breadth-first search.
 * Day 7:  Another use of the IntCode program.  The first was easy (given the modularization) especially with itertools.  The second part requires a modification to IntCode, to handle waiting on additional input.
 * Day 8:  Processing a fixed-size picture.  Mostly focused on parsing the data in a format that can be used easily.  Times:  00:28:39 / 00:40:34.  Ranks: 1902 / 1458.
+* Day 9:  Another IntCode program, with another state value to implement another parameter mode ("relative mode").  This required abstraction of the setting of values too.  Got to it late, so not bothering with time.
 
 
 ## See previous work at:
