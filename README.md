@@ -15,7 +15,10 @@ Code is tested with Python 3.6.6 (Anaconda distribution) on Win10. Developed wit
 * Day 7:  Another use of the IntCode program.  The first was easy (given the modularization) especially with itertools.  The second part requires a modification to IntCode, to handle waiting on additional input.
 * Day 8:  Processing a fixed-size picture.  Mostly focused on parsing the data in a format that can be used easily.  Times:  00:28:39 / 00:40:34.  Ranks: 1902 / 1458.
 * Day 9:  Another IntCode program, with another state value to implement another parameter mode ("relative mode").  This required abstraction of the setting of values too.  Got to it late, so not bothering with time.
-* Day 10:  Array with "asteroids".  Part 1 involved checking if any asteroids blocked line of sight.  Part 2 would involve scanning through the map like a clock (I suppose, but I haven't done it yet).
+* Day 10:  Array with "asteroids".  Part 1 involved checking if any asteroids blocked line of sight.  Part 2 involved sorting the list by angle and removing non-blocked items, to simulate a spinning laser.
+* Day 11:  TODO
+* Day 12:  Calculated an "energy" metric for a set of items.  Part 2 involves a list of states (looking for a repeat), but TODO.
+* Day 13:  
 
 ## See previous work at:
 * https://github.com/jborlik/AdventOfCode2015
