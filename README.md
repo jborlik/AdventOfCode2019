@@ -18,7 +18,7 @@ Code is tested with Python 3.6.6 (Anaconda distribution) on Win10. Developed wit
 * Day 10:  Array with "asteroids".  Part 1 involved checking if any asteroids blocked line of sight.  Part 2 involved sorting the list by angle and removing non-blocked items, to simulate a spinning laser.
 * Day 11:  TODO
 * Day 12:  Calculated an "energy" metric for a set of items.  Part 2 involves a list of states (looking for a repeat), but TODO.
-* Day 13:  Another IntCode program, like Breakout.  Part 2 requires a set of inputs to beat the game, but TODO.
+* Day 13:  Another IntCode program, like Breakout.  Part 2 requires a set of inputs to beat the game.  I did this by displaying the game, set up a loop for my joystick input, and ran it.  This was taking too long, so I "automated" my input by having the paddle track the x value of the  ball.  This ran, and it was a pleasant little movie to watch.
 
 ## See previous work at:
 * https://github.com/jborlik/AdventOfCode2015

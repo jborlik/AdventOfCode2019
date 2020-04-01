@@ -28,6 +28,7 @@ class IntCodeProgram:
 
     def setInput(self, theinput):
         self.input = theinput
+        self.input_pointer = 0
 
     def process(self):
         iscontinuing = True
